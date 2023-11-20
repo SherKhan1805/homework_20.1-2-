@@ -1,0 +1,14 @@
+[
+  {
+    "fields": {
+      "name": "Кока-Кола",
+      "description": "Праздник к нам приходит",
+      "image": "",
+      "category": "Напитки",
+      "price": 99,
+      "create_date": "2023-11-20T13:48:34Z",
+      "edit_date": "2023-11-20T13:48:36Z"
+    },
+    "model": "main.product",
+    "pk": 4
+  }]

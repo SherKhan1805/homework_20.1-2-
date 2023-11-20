@@ -1,0 +1,9 @@
+[
+  {
+    "fields": {
+      "name": "Напитки",
+      "description": "Газированные"
+    },
+    "model": "main.category",
+    "pk": 8
+  }]
