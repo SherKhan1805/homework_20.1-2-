@@ -13,6 +13,7 @@ class Product(models.Model):
     price = models.IntegerField(verbose_name='цена за покупку')
     create_date = models.DateTimeField(verbose_name='дата создания')
     edit_date = models.DateTimeField(verbose_name='дата последнего изменения')
+    category1 = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='category', verbose_name='Категория')
 
     def __str__(self):
         return f'{self.name} {self.description}'
@@ -33,4 +34,22 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'категории'
+        ordering = ('name',)
+
+
+class Contact(models.Model):
+    """
+    Модель для контактов
+    """
+    name = models.CharField(max_length=50, verbose_name='название организации')
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    address = models.TextField()
+
+    def __str__(self):
+        return f'{self.name}. {self.email}. {self.phone_number}. {self.address}'
+
+    class Meta:
+        verbose_name = 'контакт'
+        verbose_name_plural = 'контакты'
         ordering = ('name',)
