@@ -38,9 +38,16 @@ def categories(request):
 # Product.objects.category_set
 # Product.objects.category
 
-def show_product(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
-    data = {'title': f'Страница с описанием продукта{product.name}', 'product': product}
-    return render(request, 'product.html', context=data)
 
+def show_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    data = {'title': f'Страница с описанием продукта{product.name}', 'product': product}
+    return render(request, 'main/product.html', context=data)
+
+# def show_product(request, pk):
+#     product = {
+#         'object': Product.objects.get(pk=pk),
+#         'title': 'Товары'
+#     }
+#     return render(request, 'main/product.html', product)
 

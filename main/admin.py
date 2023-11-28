@@ -13,5 +13,5 @@ class StudentAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description',)
+    list_display = ('id', 'name', 'description',)
     search_fields = ('name', 'description',)
