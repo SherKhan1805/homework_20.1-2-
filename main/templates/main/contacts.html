@@ -1,52 +1,53 @@
 {% extends 'main/base.html' %}
+
 {% block content %}
-<div class="b-example-divider"></div>
-
-<div class="container">
-    <header>
-        <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
-            <h1 class="display-4 fw-normal text-body-emphasis">Контакты</h1>
-            <p class="fs-5 text-body-secondary">Оставьте ваши данные для получения обратной связи</p>
-        </div>
-    </header>
-
 <div class="col-md-6">
-    <div class="card mb-3 rounded-3 box-shadow">
+    <div class="card mb-4 rounded-3 box-shadow">
+         <div class="card-header py-3">
+             {% csrf_token %}
+             {% for contact in contacts %}
+            <h4 class="my-0 font-weight-normal">{{ contact.name }}</h4>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item text-center">
+                <h5>Email</h5>
+                <p>{{ contact.email }}</p>
+            </li>
+            <li class="list-group-item text-center">
+                <h5>Номер телефона</h5>
+                <p>{{ contact.phone_number }} </p>
+            </li>
+            <li class="list-group-item text-center">
+                <h5>Адрес</h5>
+                <p>{{ contact.address }}</p>
+            </li>
+             {% endfor %}
+        </ul>
+    </div>
+</div>
+<div class="col-md-4 offset-md-2">
+    <div class="card mb-4 rounded-3 box-shadow">
         <div class="card-header py-3">
-            <div class="card-header py-3">
-                <h4 class="my-0 font-weight-normal">Адрес</h4>
-            </div>
-            <div class="card-header py-3">
-                <h4 class="my-0 font-weight-normal">Россия, г.Екатеринбург, ул.Ленина, д.33</h4>
-            </div>
+            <h4 class="my-0 font-weight-normal">Свяжитесь с нами</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" action="" class="form-floating">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name">Имя</label>
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Ваше имя" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone">Телефон</label>
+                    <input type="text" name="phone" class="form-control" id="phone" placeholder="Контактный телефон" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message">Сообщение</label>
+                    <input type="text" name="message" class="form-control" id="message" placeholder="Напишите ваш запрос" required></input>
+                </div>
+                <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Отправить</button>
+            </form>
         </div>
     </div>
 </div>
-    <div class="col-md-4">
-        <div class="card mb-4 rounded-3 box-shadow">
-            <div class="card-header py-3">
-                <h4 class="my-0 font-weight-normal">Свяжитесь с нами</h4>
-            </div>
-            <div class="card-body">
-                <form method="post" action="" class="form-floating">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="name">Имя</label>
-                        <input type="text" name="name" class="form-control" id="name" placeholder="Ваше имя" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone">Телефон</label>
-                        <input type="text" name="phone" class="form-control" id="phone" placeholder="Контактный телефон" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message">Сообщение</label>
-                        <input type="text" name="message" class="form-control" id="message" placeholder="Напишите ваш запрос" required></input>
-                    </div>
-                    <button type="submit" class="btn btn-lg btn-block btn-outline-primary">Отправить</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 {% endblock %}

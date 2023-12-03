@@ -1,11 +1,10 @@
 from django import template
+from django.templatetags.static import PrefixNode
 
 register = template.Library()
 
 
 @register.filter()
 @register.simple_tag()
-def mediapath(val):
-    if val:
-        return f'/media/{val}'
-    return ''
+def mediapath(image_path):
+    return PrefixNode.handle_simple("MEDIA_URL") + str(image_path)

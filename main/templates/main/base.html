@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Магазин "Копеечка"</title>
+<!--    <title>Магазин "Копеечка"</title>-->
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/album/">
 
@@ -17,11 +17,12 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static 'css/album.css' %}" rel="stylesheet">
-    <div class="pricing-header px-3 py-3 pt-md-5 pt-md-4 mx-auto text-center">
-      <h2 class="display-4">КОПЕЕЧКА</h2>
-      <p class="lead">Копейка - рубль бережет</p>
-    </div>
   </head>
+
+  <div class="pricing-header px-3 py-3 pt-md-5 pt-md-4 mx-auto text-center">
+    <h2 class="display-4">КОПЕЕЧКА</h2>
+    <p class="lead">Копейка - рубль бережет</p>
+  </div>
 
   <body>
 
@@ -29,12 +30,13 @@
       <div class="collapse bg-dark" id="navbarHeader">
         <div class="container">
           <div class="row">
-            <div class="col-sm-1 offset-md-1 py-4">
+            <div class="col-sm-8 offset-md-0 py-4">
               <h4 class="text-white">Меню</h4>
               <ul class="list-unstyled">
                 <li><a href="{% url 'main:index' %}" class="text-white">Главная</a></li>
                 <li><a href="{% url 'main:categories' %}" class="text-white">Категории</a></li>
                 <li><a href="{% url 'main:contacts' %}" class="text-white">Контакты</a></li>
+                <li><a href="/material/" class="text-white">Блог</a></li>
               </ul>
             </div>
           </div>
@@ -42,19 +44,30 @@
       </div>
       <div class="navbar navbar-dark bg-dark box-shadow">
         <div class="container d-flex justify-content-between">
-          <a href="#" class="navbar-brand d-flex align-items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-            <strong>Album</strong>
-          </a>
+<!--          Кнопка с выплывающим меню-->
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
+<!--          Картинка выплывающего меню-->
+          <a href="#" class="navbar-brand d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-basket2-fill" viewBox="0 0 16 16">
+            <path d="M5.929 1.757a.5.5 0 1 0-.858-.514L2.217 6H.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h.623l1.844 6.456A.75.75 0 0 0 3.69 15h8.622a.75.75 0 0 0 .722-.544L14.877 8h.623a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1.717L10.93 1.243a.5.5 0 1 0-.858.514L12.617 6H3.383L5.93 1.757zM4 10a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0v-2zm3 0a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0v-2zm4-1a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1z"/>
+          </svg>
+            <strong> </strong>
+            <strong>Корзина</strong>
+          </a>
         </div>
       </div>
     </header>
 
-    {% block content %}
-    {% endblock %}
+    <div class="album py-5 bg-light">
+      <div class="container">
+        <div class="row">
+          {% block content%}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
 
 
     <footer class="text-muted">
