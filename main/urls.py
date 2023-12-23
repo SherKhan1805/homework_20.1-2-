@@ -2,7 +2,7 @@ from django.urls import path
 
 from main.apps import MainConfig
 from main.views import contacts, categories, ProductListView, ProductDetailView, BlogCreateView, BlogListView, \
-    BlogDetailView, BlogUpdateView, BlogDeleteView
+    BlogDetailView, BlogUpdateView, BlogDeleteView, ProductCreateView, ProductUpdateView
 
 app_name = MainConfig.name
 
@@ -19,4 +19,7 @@ urlpatterns = [
     path('view/<int:pk>', BlogDetailView.as_view(), name='view'),
     path('edit/<int:pk>', BlogUpdateView.as_view(), name='edit'),
     path('delete/<int:pk>', BlogDeleteView.as_view(), name='delete'),
+    path('create_product/', ProductCreateView.as_view(), name='create_product'),
+    path('update_product/<int:pk>/', ProductUpdateView.as_view(), name='update_product'),
+    # path('update_product/<int:pk>/', ProductUpdateView.as_view(), name='update_product'),
 ]

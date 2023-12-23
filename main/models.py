@@ -6,7 +6,7 @@ NULLABLE = {'blank': True, 'null': True}
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=50, verbose_name='название')
+    name = models.CharField(max_length=50, verbose_name='название', unique=True, **NULLABLE)
     description = models.CharField(max_length=200, verbose_name='описание')
     image = models.ImageField(upload_to='product/', verbose_name='изображение', **NULLABLE)
     category = models.CharField(max_length=50, verbose_name='категория') #удалить строчку
@@ -74,3 +74,17 @@ class Blog(models.Model):
         verbose_name = 'блог'
         verbose_name_plural = 'блог'
         ordering = ('title',)
+
+
+class Version(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, verbose_name='id_product')
+    number_version = models.IntegerField(verbose_name='номер версии', **NULLABLE)
+    name = models.CharField(max_length=100, verbose_name='наименование')
+    is_active_version = models.BooleanField(default=True, verbose_name='применить версию')
+
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+        verbose_name = 'версия'
+        verbose_name_plural = 'версии'
