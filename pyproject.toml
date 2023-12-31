@@ -10,6 +10,7 @@ packages = [{include = "homework_20"}]
 python = "^3.11"
 django = "^4.2.7"
 pytils = "^0.4.1"
+signals = "^0.0.2"
 
 
 [build-system]
