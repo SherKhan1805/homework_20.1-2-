@@ -1,8 +1,9 @@
 from django.db import models
+from main.utils import NULLABLE
+from users.models import User
+
 
 # Create your models here.
-
-NULLABLE = {'blank': True, 'null': True}
 
 
 class Product(models.Model):
@@ -14,6 +15,7 @@ class Product(models.Model):
     create_date = models.DateTimeField(verbose_name='дата создания')
     edit_date = models.DateTimeField(verbose_name='дата последнего изменения')
     category1 = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='category', verbose_name='Категория')
+    author = models.CharField(max_length=50, verbose_name=User, unique=True, **NULLABLE)
 
     def __str__(self):
         return f'{self.name} {self.description}'

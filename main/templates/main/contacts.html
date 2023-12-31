@@ -6,7 +6,7 @@
          <div class="card-header py-3">
              {% csrf_token %}
              {% for contact in contacts %}
-            <h4 class="my-0 font-weight-normal">{{ contact.name }}</h4>
+            <h4 class="my-0 font-weight-normal text-center">{{ contact.name }}</h4>
         </div>
         <ul class="list-group">
             <li class="list-group-item text-center">

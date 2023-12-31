@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.crypto import get_random_string
 
-from main.models import NULLABLE
+from main.utils import NULLABLE
 
 
 class User(AbstractUser):

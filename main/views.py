@@ -7,6 +7,7 @@ from main.models import Product, Contact, Blog, Version
 from main.forms import ProductForm, VersionFormSet
 
 from django.db.models import OuterRef, Subquery
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # Create your views here.
@@ -133,7 +134,7 @@ class BlogDeleteView(DeleteView):
     template_name = 'main/blog_confirm_delete.html'
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     """
     Класс для создания продукта
     """
@@ -158,13 +159,12 @@ class ProductCreateView(CreateView):
         return data
 
     def form_valid(self, form):
-        """
-        Форма для установки версии продукта
-        """
         context = self.get_context_data()
         version_formset = context['version_formset']
         if version_formset.is_valid():
-            self.object = form.save()
+            self.object = form.save(commit=False)
+            self.object.author = self.request.user  # Установка автора продукта
+            self.object.save()
             version_formset.instance = self.object
             version_formset.save()
             return super().form_valid(form)
