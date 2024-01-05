@@ -7,7 +7,7 @@ from main.models import Product, Contact, Blog, Version
 from main.forms import ProductForm, VersionFormSet
 
 from django.db.models import OuterRef, Subquery
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 
 # Create your views here.
@@ -167,7 +167,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
             return self.form_invalid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """
     Класс для обновления данных о продукте
     """
@@ -179,6 +179,12 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     def __init__(self):
         self.object = None
         self.request = None
+
+    def test_func(self):
+        """
+        Проверка, является ли текущий пользователь автором продукта
+        """
+        return self.request.user == self.get_object().author
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -202,3 +208,22 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
             return super().form_valid(form)
         else:
             return self.form_invalid(form)
+
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Product
+    success_url = reverse_lazy('main:index')
+    template_name = 'main/product_confirm_delete.html'
+
+    def test_func(self):
+        """
+        Проверка, является ли текущий пользователь автором продукта
+        """
+        return self.request.user == self.get_object().author
+
+
+def custom_permission_denied(request, exception):
+    """
+    При ошибке изменения или удаления товара перевод на собственную страницу
+    """
+    return render(request, 'main/403.html', status=403)

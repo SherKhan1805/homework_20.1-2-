@@ -4,11 +4,11 @@
     <head>
     <style>
     body {
-      background-image: url('https://filtorg.ru/images/thumbnails/878/768/detailed/64/1_kopejka_2014_m_anc_meshkovye_krymskaja_kopejka_bez_obrashchenija_lq7z-ju.jpg');
-<!--      background-repeat: no-repeat;-->
-      background-attachment: fixed;
-      background-size: 20% 60%;
-    }
+          background-image: url('https://filtorg.ru/images/thumbnails/878/768/detailed/64/1_kopejka_2014_m_anc_meshkovye_krymskaja_kopejka_bez_obrashchenija_lq7z-ju.jpg');
+    <!--      background-repeat: no-repeat;-->
+          background-attachment: fixed;
+          background-size: 20% 60%;
+        }
     </style>
     </head>
     <body>
@@ -59,8 +59,12 @@
                 <li><a href="{% url 'main:contacts' %}" class="text-white">Контакты</a></li>
                 <li><a href="/material/" class="text-white">Блог</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'users:profile' %}" class="text-white">Профиль: <font color="green" size = '3'> {{user}}</font></a></li>
                     <li><a href="{% url 'users:logout' %}" class="text-white">Выйти</a></li>
+                    {% if user.avatar  %}
+                        <li><a href="{% url 'users:profile' %}" class="text-white">Профиль: <font color="green" size='3'>{{ user }}</font> <img src="{{ user.avatar.url }}" alt="Avatar" width="30" height="30"></a></li>
+                    {% else %}
+                        <li><a href="{% url 'users:profile' %}" class="text-white">Профиль: <font color="green" size='3'>{{ user }}</font></a></li>
+                    {% endif %}
                 {% else %}
                     <li><a href="{% url 'users:register' %}" class="text-white">Регистрация</a></li>
                     <li><a href="{% url 'users:login' %}" class="text-white">Войти</a></li>
