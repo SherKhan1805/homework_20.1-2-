@@ -8,6 +8,7 @@ from django.views.generic import CreateView, UpdateView
 from users.forms import UserRegisterForm, UserProfileForm
 
 from users.models import User
+from main.utils import gen_verify_code
 
 
 class RegisterView(CreateView):
@@ -18,19 +19,12 @@ class RegisterView(CreateView):
 
     def form_valid(self, form):
         new_user = form.save()
-        # new_user = form.save(commit=False)
-        # verification = gen_verify_code()
-        # new_user.email_verify = verification
-        # new_user.is_active = False  # делаем нового юзера неактивным
-        # verification_url = f'http://127.0.0.1:8000/users/activate/{verification}'
         send_mail(
             subject='Подтверждение адреса электронной почты',
-            # message=f'Для подтверждения вашей почты перейдите по ссылке: {verification_url}',
             message=f'Почта подтверждена, приятного пользования нашим магазином.',
             from_email=settings.EMAIL_HOST_USER,
             recipient_list=[new_user.email]
         )
-        # new_user.save()
 
         return super().form_valid(form)
 
@@ -71,5 +65,3 @@ def restore_password(request):
         return redirect(reverse('users:login'))
     return render(request, "users/restore_password.html")
 
-def gen_verify_code():
-    return ('a'.join([str(random.randint(0, 9)) for i in range(5)]))

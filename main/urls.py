@@ -21,5 +21,4 @@ urlpatterns = [
     path('delete/<int:pk>', BlogDeleteView.as_view(), name='delete'),
     path('create_product/', ProductCreateView.as_view(), name='create_product'),
     path('update_product/<int:pk>/', ProductUpdateView.as_view(), name='update_product'),
-    # path('update_product/<int:pk>/', ProductUpdateView.as_view(), name='update_product'),
 ]

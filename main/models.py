@@ -10,12 +10,12 @@ class Product(models.Model):
     name = models.CharField(max_length=50, verbose_name='название', unique=True, **NULLABLE)
     description = models.CharField(max_length=200, verbose_name='описание')
     image = models.ImageField(upload_to='product/', verbose_name='изображение', **NULLABLE)
-    category = models.CharField(max_length=50, verbose_name='категория') #удалить строчку
+    category = models.CharField(max_length=50, verbose_name='категория', **NULLABLE) #удалить строчку
     price = models.IntegerField(verbose_name='цена за покупку')
     create_date = models.DateTimeField(verbose_name='дата создания')
     edit_date = models.DateTimeField(verbose_name='дата последнего изменения')
     category1 = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='category', verbose_name='Категория')
-    author = models.CharField(max_length=50, verbose_name=User, unique=True, **NULLABLE)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name='автор', null=True, blank=True)
 
     def __str__(self):
         return f'{self.name} {self.description}'

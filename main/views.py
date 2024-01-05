@@ -38,11 +38,6 @@ def contacts(request):
     """
     Функция получает данные, введенные пользователем
     """
-    # if request.method == 'POST':
-    #     name = request.POST.get('name')
-    #     phone = request.POST.get('phone')
-    #     message = request.POST.get('message')
-    #     print(f'{name} {phone}: {message}')
 
     contacts_ = Contact.objects.all()
     return render(request, 'main/contacts.html', {'contacts': contacts_})
@@ -54,7 +49,7 @@ def categories(request):
 
 class ProductDetailView(DetailView):
     """
-    класс для выведения информации о продукте
+    Класс для выведения информации о продукте
     """
     model = Product
     template_name = 'main/product.html'
@@ -172,7 +167,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
             return self.form_invalid(form)
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     """
     Класс для обновления данных о продукте
     """
@@ -183,6 +178,7 @@ class ProductUpdateView(UpdateView):
 
     def __init__(self):
         self.object = None
+        self.request = None
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -192,54 +188,17 @@ class ProductUpdateView(UpdateView):
             data['version_formset'] = VersionFormSet(instance=self.object)
         return data
 
-
-
-    # def form_valid(self, form):
-    #     formset = self.get_context_data()['formset']
-    #     self.object = form.save()
-    #     if self.object.owner != self.request.user:
-    #         return redirect(reverse('usersapp:login'))
-    #     else:
-    #         self.object.save()
-    #         if formset.is_valid():
-    #             formset.instance = self.object
-    #             formset.save()
-    #         return super().form_valid(form)
-
-
     def form_valid(self, form):
-
+        """
+        Форма для установки версии продукта
+        """
         context = self.get_context_data()
         version_formset = context['version_formset']
-        self.object = form.save()
-
         if version_formset.is_valid():
+            self.object = form.save()
+            self.object.author = self.request.user
             version_formset.instance = self.object
             version_formset.save()
             return super().form_valid(form)
         else:
             return self.form_invalid(form)
-
-
-        # context = self.get_context_data()
-        # version_formset = context['version_formset']
-        #
-        # if version_formset.is_valid():
-        #     self.object = form.save()
-        #
-        #     # Получим все версии продукта
-        #     versions = version_formset.instance.version_set.all()
-        #
-        #     # Установим активной версией первую активную версию
-        #     active_versions = versions.filter(is_active_version=True)
-        #     if active_versions.count() > 1:
-        #         for version in active_versions[1:]:
-        #             version.is_active_version = False
-        #             version.save()
-        #
-        #     version_formset.instance = self.object
-        #     version_formset.save()
-        #
-        #     return super().form_valid(form)
-        # else:
-        #     return self.form_invalid(form)

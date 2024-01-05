@@ -20,17 +20,3 @@ class User(AbstractUser):
         verbose_name = 'пользователь'
         verbose_name_plural = 'пользователи'
 
-
-# class EmailVerification(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     token = models.CharField(max_length=255)
-#     is_verified = models.BooleanField(default=False)
-#
-#     def save(self, *args, **kwargs):
-#         # Генерация токена при сохранении объекта
-#         if not self.token:
-#             self.token = get_random_string(32)
-#         if not self.user.pk:
-#             self.user.save()
-#
-#         super().save(*args, **kwargs)

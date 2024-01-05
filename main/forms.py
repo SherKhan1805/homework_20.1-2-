@@ -11,7 +11,10 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['name', 'description', 'category', 'category1', 'image', 'price', 'create_date', 'edit_date']
+        widgets = {
+            'author': forms.HiddenInput(),
+        }
 
     def clean_name(self):
         cleaned_name = self.cleaned_data.get('name')
@@ -44,23 +47,6 @@ class VersionForm(forms.ModelForm):
         model = Version
         fields = '__all__'
 
-
-# class BaseVersionInlineFormSet(BaseInlineFormSet):
-#     def get_queryset(self):
-#         # Получение последней версии продукта
-#         last_version = Version.objects.filter(product=self.instance).order_by('-number_version').first()
-#
-#         # Возвращение QuerySet с последней версией (или пустым, если версии отсутствуют)
-#         return Version.objects.filter(pk=last_version.pk) if last_version else Version.objects.none()
-#
-#
-# VersionFormSet = inlineformset_factory(
-#     Product,
-#     Version,
-#     formset=BaseVersionInlineFormSet,  # Создайте кастомный класс формсета (см. ниже)
-#     fields=['number_version', 'is_active_version'],
-#     extra=1
-# )
 
 # Формсет для выведения выбора версии и ее активности при создании и обновлении продукта
 VersionFormSet = inlineformset_factory(Product, Version, fields=['number_version', 'is_active_version'], extra=1)
