@@ -23,6 +23,13 @@
                 Создать
               {% endif %}
             </button>
+            {% if perms.catalog.view_product %}
+                {% if object.is_published %}
+                  <a class="p-1.5 btn btn-outline-danger" href="{% url 'main:toggle' object.pk %}">Снять с публикации</a>
+                {% else %}
+                  <a class="p-1.5 btn btn-outline-success" href="{% url 'main:toggle' object.pk %}">Опубликовать</a>
+                {% endif %}
+            {% endif %}
           </form>
         </div>
       </div>

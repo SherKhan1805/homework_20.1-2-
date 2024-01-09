@@ -1,19 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from pytils.translit import slugify
 
-from main.models import Product, Contact, Blog, Version
+from main.models import Product, Contact, Version
 from main.forms import ProductForm, VersionFormSet
 
 from django.db.models import OuterRef, Subquery
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 
 
 # Create your views here.
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     """
     Класс для создания списка продуктов
     """
@@ -28,7 +27,7 @@ class ProductListView(ListView):
             active_version_number=Subquery(
                 Version.objects.filter(
                     product=OuterRef('pk'),
-                    is_active_version=True
+                    is_active_version=True,
                 ).values('number_version')[:1]
             )
         )
@@ -53,80 +52,6 @@ class ProductDetailView(DetailView):
     """
     model = Product
     template_name = 'main/product.html'
-
-
-class BlogCreateView(CreateView):
-    """
-    Класс для создания блоговой записи
-    """
-    model = Blog
-    fields = ('title', 'content', 'image')
-    template_name = 'main/blog_form.html'
-    success_url = reverse_lazy('main:list')
-
-    def form_valid(self, form):
-        """
-        Создаем уникальный slug
-        """
-        if form.is_valid():
-            new_mat = form.save()
-            new_mat.slug = slugify(new_mat.title)
-            new_mat.save()
-
-        return super().form_valid(form)
-
-
-class BlogListView(ListView):
-    """
-    Класс для создания списка блоговых записей
-    """
-    model = Blog
-    template_name = 'main/blog_list.html'
-
-    def get_queryset(self, *args, **kwargs):
-        """
-        Возвращает блоговые записи, которые имеют положительный признак публикации
-        """
-        queryset = super().get_queryset(*args, **kwargs)
-        queryset = queryset.filter(publication=True)
-        return queryset
-
-
-class BlogDetailView(DetailView):
-    model = Blog
-    template_name = 'main/blog_detail.html'
-
-    def get_object(self, queryset=None):
-        self.object = super().get_object(queryset)
-        self.object.count += 1
-        self.object.save()
-        return self.object
-
-
-class BlogUpdateView(UpdateView):
-    """
-    Класс позволяет редактировать запись
-    """
-    model = Blog
-    fields = ('title', 'content', 'image')
-    template_name = 'main/blog_form.html'
-
-    def form_valid(self, form):
-        if form.is_valid():
-            new_mat = form.save()
-            new_mat.slug = slugify(new_mat.title)
-            new_mat.save()
-
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse('main:view', args=[self.kwargs.get('pk')])
-
-
-class BlogDeleteView(DeleteView):
-    model = Blog
-    success_url = reverse_lazy('main:list')
-    template_name = 'main/blog_confirm_delete.html'
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -210,7 +135,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return self.form_invalid(form)
 
 
-class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('main:index')
     template_name = 'main/product_confirm_delete.html'
@@ -227,3 +152,15 @@ def custom_permission_denied(request, exception):
     При ошибке изменения или удаления товара перевод на собственную страницу
     """
     return render(request, 'main/403.html', status=403)
+
+
+def toggle_publish(request, pk):
+    product_item = get_object_or_404(Product, pk=pk)
+    if product_item.is_published:
+        product_item.is_published = False
+    else:
+        product_item.is_published = True
+
+    product_item.save()
+
+    return redirect(reverse('main:index'))
