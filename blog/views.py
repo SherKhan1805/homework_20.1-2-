@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
@@ -6,7 +6,7 @@ from pytils.translit import slugify
 from blog.models import Blog
 
 
-class BlogCreateView(CreateView):
+class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     """
     Класс для создания блоговой записи
     """
@@ -14,6 +14,7 @@ class BlogCreateView(CreateView):
     fields = ('title', 'content', 'image')
     template_name = 'blog/blog_form.html'
     success_url = reverse_lazy('blog:list')
+    permission_required = 'blog.add_blog'
 
     def form_valid(self, form):
         """
@@ -43,7 +44,7 @@ class BlogListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class BlogDetailView(DetailView):
+class BlogDetailView(LoginRequiredMixin, DetailView):
     model = Blog
     template_name = 'blog/blog_detail.html'
 
@@ -54,13 +55,14 @@ class BlogDetailView(DetailView):
         return self.object
 
 
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     """
     Класс позволяет редактировать запись
     """
     model = Blog
     fields = ('title', 'content', 'image')
     template_name = 'blog/blog_form.html'
+    permission_required = 'blog.change_blog'
 
     def form_valid(self, form):
         if form.is_valid():
@@ -74,7 +76,9 @@ class BlogUpdateView(UpdateView):
         return reverse('blog:view', args=[self.kwargs.get('pk')])
 
 
-class BlogDeleteView(DeleteView):
+class BlogDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Blog
     success_url = reverse_lazy('blog:list')
     template_name = 'blog/blog_confirm_delete.html'
+    permission_required = 'blog.delete_blog'
+

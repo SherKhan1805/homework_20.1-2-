@@ -46,7 +46,7 @@ def categories(request):
     return render(request, 'main/categories.html')
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     """
     Класс для выведения информации о продукте
     """
