@@ -92,24 +92,28 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
             return self.form_invalid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, UpdateView):
     """
     Класс для обновления данных о продукте
     """
     model = Product
     fields = ('name', 'description', 'image')
     success_url = reverse_lazy('main:index')
-    template_name = 'main/new_product_form.html'
+    template_name = 'main/product_update.html'
+    permission_required = 'main.edit_published'
 
     def __init__(self):
         self.object = None
         self.request = None
 
     def test_func(self):
+
         """
-        Проверка, является ли текущий пользователь автором продукта
+        Проверка, является ли текущий пользователь автором или модератором продукта
         """
-        return self.request.user == self.get_object().author
+        user = self.request.user
+        product_author = self.get_object().author
+        return user == product_author or user.has_perm('main.edit_published')
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
