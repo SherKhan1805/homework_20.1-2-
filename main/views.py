@@ -97,12 +97,13 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesT
     Класс для обновления данных о продукте
     """
     model = Product
-    fields = ('name', 'description', 'image')
+    fields = ('name', 'description', 'image', 'category')
+    permission_required = 'main.edit_published'
     success_url = reverse_lazy('main:index')
     template_name = 'main/product_update.html'
-    permission_required = 'main.edit_published'
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.object = None
         self.request = None
 
@@ -125,18 +126,34 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesT
 
     def form_valid(self, form):
         """
-        Форма для установки версии продукта
+        Метод для установки версии продукта
         """
         context = self.get_context_data()
         version_formset = context['version_formset']
+
         if version_formset.is_valid():
-            self.object = form.save()
+            self.object = form.save(commit=False)
             self.object.author = self.request.user
             version_formset.instance = self.object
             version_formset.save()
             return super().form_valid(form)
         else:
             return self.form_invalid(form)
+
+    def get_form(self, form_class=None):
+        """
+        Переопределение метода чтобы динамически изменять поля формы
+        в зависимости от принадлежности пользователя к группе "moderator".
+        Если пользователь является модератором, поля 'name' и 'image' удаляются из формы.
+        """
+        form = super().get_form(form_class)
+        user = self.request.user
+
+        if user.groups.filter(name="moderator").exists():
+            form.fields.pop('name')
+            form.fields.pop('image')
+
+        return form
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
