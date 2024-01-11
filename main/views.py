@@ -108,13 +108,12 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesT
         self.request = None
 
     def test_func(self):
-
         """
         Проверка, является ли текущий пользователь автором или модератором продукта
         """
         user = self.request.user
         product_author = self.get_object().author
-        return user == product_author or user.has_perm('main.edit_published')
+        return user == product_author or user.groups.filter(name="moderator").exists()
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -176,12 +175,18 @@ def custom_permission_denied(request, exception):
 
 
 def toggle_publish(request, pk):
+    """
+    Функция проверяет статус публикации и присваивает противоположное значение
+    """
     product_item = get_object_or_404(Product, pk=pk)
-    if product_item.is_published:
-        product_item.is_published = False
+
+    # Проверка на наличие пермиссий у пользователя для публикации/снятия
+    # с публикации продукта
+    # Если прав нет идет обработка ошибки 403
+    if request.user.has_perm('catalog.edit_published'):
+        product_item.is_published = not product_item.is_published
+        product_item.save()
+        return redirect(reverse('main:index'))
     else:
-        product_item.is_published = True
-
-    product_item.save()
-
-    return redirect(reverse('main:index'))
+        # Обработка случая, когда у пользователя нет нужных прав
+        return render(request, 'main/403.html')
