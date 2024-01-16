@@ -11,18 +11,21 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@@g52l3natom35-672_rjh0uqpbf2u3cnxv#a2%nexm*jcz(h='
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -79,9 +82,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'homework6',
+        'NAME': os.getenv('DATABASES_NAME'),
         'USER': 'postgres',
-        'PASSWORD': 'alexia1456',
+        'PASSWORD': os.getenv('DATABASES_PASSWORD'),
     }
 }
 
@@ -142,8 +145,18 @@ EMAIL_PORT = 465  # порт
 EMAIL_USE_SSL = True
 
 EMAIL_HOST_USER = 'DDJJAANNGGOO@yandex.ru'  # почта С которой отправляются нотифаи
-EMAIL_HOST_PASSWORD = 'wtmthzsexfloioul'  # реальный пароль - закрыть для гитхаб, создать портальный пароль
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  # реальный пароль - закрыть для гитхаб, создать портальный пароль
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
+
+CACHE_ENABLED = os.getenv('CACHE_ENABLED') == 'True'
+
+if CACHE_ENABLED:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': os.getenv('CACHE_LOCATION')
+        }
+    }

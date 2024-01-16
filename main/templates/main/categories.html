@@ -2,9 +2,14 @@
 
 {% block content %}
 
-
-
-
+<div class="col-6 col-md">
+                <h5>Категории товаров</h5>
+                <ul class="list-unstyled text-small">
+                    {% for category in categories_list %}
+                        <li>{{ category.name }}</li>
+                    {% endfor %}
+                </ul>
+</div>
 
 
 {% endblock %}

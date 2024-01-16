@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
+from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from main.models import Product, Contact, Version
@@ -7,6 +8,8 @@ from main.forms import ProductForm, VersionFormSet
 
 from django.db.models import OuterRef, Subquery
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
+
+from main.services import get_categories_from_cache
 
 
 # Create your views here.
@@ -43,9 +46,14 @@ def contacts(request):
 
 
 def categories(request):
-    return render(request, 'main/categories.html')
+    """
+    Вывод списка категорий продуктов с использованием низкоуровневого кэширования
+    """
+    categories_list = get_categories_from_cache()
+    return render(request, 'main/categories.html', {'categories_list': categories_list})
 
 
+# @cache_page(60)
 class ProductDetailView(LoginRequiredMixin, DetailView):
     """
     Класс для выведения информации о продукте
